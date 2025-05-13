@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Корзина — LEGO Магазин</title>
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<div class="container">
+			<header class="header">
+				<h1>LEGO Магазин</h1>
+				<button id="accessibility-toggle-btn" class="accessibility-button">
+					Версия для слабовидящих
+				</button>
+			</header>
+			<div class="sidebar">
+				<div class="logo">🧱 LEGO Store</div>
+				<nav class="nav">
+					<a href="index.html">Главная</a>
+					<a href="about.html">О нас</a>
+					<a href="catalog.html">Каталог</a>
+					<a href="reviews.html">Отзывы</a>
+					<a href="contact.html">Контакты</a>
+					<a href="delivery.html">Доставка и оплата</a>
+				</nav>
+				<div class="counter">Посещений: <span id="visit-count">0</span></div>
+				<div class="cart-status">
+					<a href="cart.html">Корзина (<span id="cart-count">0</span>)</a>
+				</div>
+			</div>
+			<div class="main">
+				<div class="banner">Скидки до 30% на все наборы Star Wars!</div>
+				<div class="main-content">
+					<h2>Ваша Корзина</h2>
+					<div id="cart-items-container">
+						<!-- Товары корзины будут здесь -->
+					</div>
+					<div id="cart-summary">
+						<p>
+							<strong>Итого:</strong> <span id="cart-total-price">0</span> руб.
+						</p>
+						<button id="checkout-btn" class="btn-checkout">
+							Оформить заказ
+						</button>
+						<button id="clear-cart-btn" class="btn-clear-cart">
+							Очистить корзину
+						</button>
+					</div>
+					<div id="empty-cart-message" style="display: none">
+						<p>
+							Ваша корзина пуста. Перейдите в
+							<a href="catalog.html">каталог</a>, чтобы выбрать товары.
+						</p>
+					</div>
+				</div>
+			</div>
+			<footer class="footer">
+				<div class="footer-content">
+					<div class="footer-section about">
+						<h4>О магазине</h4>
+						<p>
+							Ваш любимый магазин оригинальных наборов LEGO. Радость для детей и
+							взрослых!
+						</p>
+					</div>
+					<div class="footer-section links">
+						<h4>Полезные ссылки</h4>
+						<ul>
+							<li><a href="index.html">Главная</a></li>
+							<li><a href="about.html">О нас</a></li>
+							<li><a href="catalog.html">Каталог</a></li>
+							<li><a href="contact.html">Контакты</a></li>
+							<li><a href="#">Доставка и оплата</a></li>
+						</ul>
+					</div>
+					<div class="footer-section contact-info">
+						<h4>Свяжитесь с нами</h4>
+						<p><i class="fas fa-envelope"></i> Email: info@legostore.ru</p>
+						<p><i class="fas fa-phone"></i> Телефон: +7 (495) 123-45-67</p>
+						<p><i class="fas fa-map-marker-alt"></i> Москва, ул. Кубиков, 10</p>
+					</div>
+				</div>
+				<div class="footer-bottom">
+					&copy; 2024 LEGO Store | Все права защищены.
+				</div>
+			</footer>
+		</div>
+		<script src="script.js"></script>
+	</body>
+</html>

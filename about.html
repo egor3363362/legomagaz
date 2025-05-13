@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="UTF-8" />
+		<title>О нас — LEGO Магазин</title>
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<div class="container">
+			<header class="header">
+				<h1>LEGO Магазин</h1>
+				<button id="accessibility-toggle-btn" class="accessibility-button">
+					Версия для слабовидящих
+				</button>
+			</header>
+			<div class="sidebar">
+				<div class="logo">🧱 LEGO Store</div>
+				<nav class="nav">
+					<a href="index.html">Главная</a>
+					<a href="about.html">О нас</a>
+					<a href="catalog.html">Каталог</a>
+					<a href="reviews.html">Отзывы</a>
+					<a href="contact.html">Контакты</a>
+					<a href="delivery.html">Доставка и оплата</a>
+				</nav>
+				<div class="counter">Посещений: <span id="visit-count">0</span></div>
+				<div class="cart-status">
+					<a href="cart.html"> Корзина (<span id="cart-count">0</span>) </a>
+				</div>
+			</div>
+			<div class="main">
+				<div class="banner">
+					<div class="banner-content">
+						<img
+							src="images/sokol.png"
+							alt="Star Wars LEGO"
+							class="banner-image"
+						/>
+						<div class="banner-text">
+							Скидки до 30% на все наборы Star Wars!
+						</div>
+					</div>
+				</div>
+				<div class="main-content">
+					<h2>О нас</h2>
+					<div class="about-content">
+						<div class="about-text">
+							<p>
+								Мы любим LEGO и продаем только оригинальные наборы. Наш магазин
+								работает с 2020 года. У нас вы найдете как популярные, так и
+								редкие коллекционные наборы для детей и взрослых.
+							</p>
+							<p>
+								Наша миссия — сделать мир LEGO доступным каждому. Мы тщательно
+								отбираем каждый набор, который появляется в нашем каталоге,
+								гарантируя подлинность и качество всех товаров.
+							</p>
+							<h3>Почему выбирают нас?</h3>
+							<ul>
+								<li>Только оригинальные наборы LEGO</li>
+								<li>Гарантия качества на все товары</li>
+								<li>Быстрая доставка по всей России</li>
+								<li>Профессиональные консультации</li>
+								<li>Регулярные акции и скидки</li>
+							</ul>
+							<p>
+								Наша команда состоит из настоящих фанатов LEGO, которые всегда
+								готовы помочь вам с выбором идеального набора. Мы регулярно
+								проводим мастер-классы и мероприятия для наших клиентов,
+								создавая настоящее сообщество любителей конструкторов LEGO.
+							</p>
+						</div>
+						<div class="about-image">
+							<img
+								src="images/store.jpg"
+								alt="Наш магазин LEGO"
+								onerror="this.src='commanda.jpg'; this.alt='Изображение не найдено';"
+							/>
+							<p class="image-caption">Наш магазин в Москве</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<footer class="footer">
+				<div class="footer-content">
+					<div class="footer-section about">
+						<h4>О магазине</h4>
+						<p>
+							Ваш любимый магазин оригинальных наборов LEGO. Радость для детей и
+							взрослых!
+						</p>
+					</div>
+					<div class="footer-section links">
+						<h4>Полезные ссылки</h4>
+						<ul>
+							<li><a href="index.html">Главная</a></li>
+							<li><a href="about.html">О нас</a></li>
+							<li><a href="catalog.html">Каталог</a></li>
+							<li><a href="reviews.html">Отзывы</a></li>
+							<li><a href="contact.html">Контакты</a></li>
+							<li><a href="delivery.html">Доставка и оплата</a></li>
+						</ul>
+					</div>
+					<div class="footer-section contact-info">
+						<h4>Свяжитесь с нами</h4>
+						<p><i class="fas fa-envelope"></i> Email: info@legostore.ru</p>
+						<p><i class="fas fa-phone"></i> Телефон: +7 (495) 123-45-67</p>
+						<p><i class="fas fa-map-marker-alt"></i> Москва, ул. Кубиков, 10</p>
+					</div>
+				</div>
+				<div class="footer-bottom">
+					&copy; 2024 LEGO Store | Все права защищены.
+				</div>
+			</footer>
+		</div>
+		<script src="script.js"></script>
+	</body>
+</html>
