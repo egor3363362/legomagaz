@@ -419,10 +419,12 @@ function handleReviewSubmit(event) {
 	const text = document.getElementById('review-text').value
 
 	const review = {
+		id: Date.now(), // Add unique ID for each review
 		name,
 		rating,
 		text,
 		date: new Date().toISOString(),
+		replies: [] // Array to store replies
 	}
 
 	// Get existing reviews
@@ -437,6 +439,43 @@ function handleReviewSubmit(event) {
 	displayReviews()
 }
 
+function handleReplySubmit(event, reviewId) {
+	event.preventDefault()
+	const replyText = event.target.querySelector('.reply-text').value
+	
+	const reply = {
+		id: Date.now(),
+		name: "Администратор", // Always use "Администратор" as the name
+		text: replyText,
+		date: new Date().toISOString()
+	}
+
+	let reviews = JSON.parse(localStorage.getItem('reviews') || '[]')
+	const review = reviews.find(r => r.id === reviewId)
+	if (review) {
+		if (!review.replies) {
+			review.replies = []
+		}
+		review.replies.push(reply)
+		localStorage.setItem('reviews', JSON.stringify(reviews))
+		displayReviews()
+	}
+
+	// Hide the reply form after submission
+	const replyForm = event.target
+	replyForm.style.display = 'none'
+	replyForm.reset()
+}
+
+function toggleReplyForm(reviewId) {
+	const replyForm = document.getElementById(`reply-form-${reviewId}`)
+	if (replyForm.style.display === 'none' || !replyForm.style.display) {
+		replyForm.style.display = 'block'
+	} else {
+		replyForm.style.display = 'none'
+	}
+}
+
 function displayReviews() {
 	const reviewsList = document.getElementById('reviews-list')
 	if (!reviewsList) return
@@ -444,28 +483,45 @@ function displayReviews() {
 	const reviews = JSON.parse(localStorage.getItem('reviews') || '[]')
 
 	if (reviews.length === 0) {
-		reviewsList.innerHTML =
-			'<p class="no-reviews">Пока нет отзывов. Будьте первым!</p>'
+		reviewsList.innerHTML = '<p class="no-reviews">Пока нет отзывов. Будьте первым!</p>'
 		return
 	}
 
 	reviewsList.innerHTML = reviews
-		.map(
-			review => `
-		<div class="review-item">
-			<div class="review-header">
-				<div>
-					<span class="review-author">${review.name}</span>
-					<span class="review-rating">${'★'.repeat(review.rating)}${'☆'.repeat(
-				5 - review.rating
-			)}</span>
+		.map(review => `
+			<div class="review-item">
+				<div class="review-header">
+					<div>
+						<span class="review-author">${review.name}</span>
+						<span class="review-rating">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</span>
+					</div>
+					<span class="review-date">${new Date(review.date).toLocaleDateString()}</span>
 				</div>
-				<span class="review-date">${new Date(review.date).toLocaleDateString()}</span>
+				<div class="review-text">${review.text}</div>
+				
+				<!-- Replies section -->
+				<div class="review-replies">
+					${(review.replies || []).map(reply => `
+						<div class="reply-item">
+							<div class="reply-header">
+								<span class="reply-author">${reply.name}</span>
+								<span class="reply-date">${new Date(reply.date).toLocaleDateString()}</span>
+							</div>
+							<div class="reply-text">${reply.text}</div>
+						</div>
+					`).join('')}
+				</div>
+
+				<!-- Reply form -->
+				<button onclick="toggleReplyForm(${review.id})" class="reply-button">Ответить</button>
+				<form id="reply-form-${review.id}" class="reply-form" style="display: none;" onsubmit="handleReplySubmit(event, ${review.id})">
+					<div class="form-group">
+						<textarea class="reply-text" placeholder="Ваш ответ" required></textarea>
+					</div>
+					<button type="submit" class="submit-reply-btn">Отправить ответ</button>
+				</form>
 			</div>
-			<div class="review-text">${review.text}</div>
-		</div>
-	`
-		)
+		`)
 		.join('')
 }
 
