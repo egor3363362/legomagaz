@@ -149,6 +149,8 @@ if (document.getElementById('product-grid')) {
 			image: 'polise.png',
 			description:
 				'Создайте свой полицейский участок с этим увлекательным набором! В набор входят полицейский участок, полицейская машина, вертолет и 5 минифигурок. Отлично подходит для детей от 6 лет.',
+			age: '6+',
+			pieces: 743
 		},
 		{
 			id: 2,
@@ -158,6 +160,8 @@ if (document.getElementById('product-grid')) {
 			image: 'fire.png',
 			description:
 				'Спасайте город от пожаров с этой пожарной станцией! В набор входят пожарная машина, вертолет, станция и 4 минифигурки пожарных. Рекомендуется для детей от 6 лет.',
+			age: '6+',
+			pieces: 509
 		},
 		{
 			id: 3,
@@ -167,6 +171,8 @@ if (document.getElementById('product-grid')) {
 			image: 'Atrain.png',
 			description:
 				'Управляйте грузовым поездом с дистанционным управлением! В набор входят локомотив, вагоны, железнодорожная станция и 3 минифигурки. Для детей от 7 лет.',
+			age: '7+',
+			pieces: 1226
 		},
 		{
 			id: 4,
@@ -176,6 +182,8 @@ if (document.getElementById('product-grid')) {
 			image: 'exkavator.png',
 			description:
 				'Соберите реалистичный экскаватор с подвижными элементами! В набор входят детали для сборки экскаватора с подвижной стрелой и ковшом. Для детей от 8 лет.',
+			age: '8+',
+			pieces: 569
 		},
 		{
 			id: 5,
@@ -185,6 +193,8 @@ if (document.getElementById('product-grid')) {
 			image: 'guntruk.png',
 			description:
 				'Создайте крутой гоночный автомобиль с подвижными элементами! В набор входят детали для сборки спортивного автомобиля с подвеской и рулевым управлением. Для детей от 9 лет.',
+			age: '9+',
+			pieces: 647
 		},
 		{
 			id: 6,
@@ -194,6 +204,8 @@ if (document.getElementById('product-grid')) {
 			image: 'kran.png',
 			description:
 				'Соберите мощный строительный кран с множеством функций! В набор входят детали для сборки крана с подвижной стрелой, лебедкой и кабиной. Для детей от 10 лет.',
+			age: '10+',
+			pieces: 1492
 		},
 		{
 			id: 7,
@@ -203,6 +215,8 @@ if (document.getElementById('product-grid')) {
 			image: 'sokol.png',
 			description:
 				'Соберите легендарный корабль Хана Соло! В набор входят детали для сборки Сокола Тысячелетия с открывающимся люком, пушками и 7 минифигурками. Для детей от 9 лет.',
+			age: '9+',
+			pieces: 1468
 		},
 		{
 			id: 8,
@@ -212,6 +226,8 @@ if (document.getElementById('product-grid')) {
 			image: 'x-wing.png',
 			description:
 				'Создайте истребитель X-Wing из Звездных войн! В набор входят детали для сборки истребителя с подвижными крыльями и 4 минифигурками. Для детей от 8 лет.',
+			age: '8+',
+			pieces: 474
 		},
 		{
 			id: 9,
@@ -221,6 +237,8 @@ if (document.getElementById('product-grid')) {
 			image: 'hospital.png',
 			description:
 				'Создайте современную больницу с множеством деталей! В набор входят здание больницы, машина скорой помощи и 4 минифигурки. Для детей от 6 лет.',
+			age: '6+',
+			pieces: 379
 		},
 		{
 			id: 10,
@@ -230,6 +248,8 @@ if (document.getElementById('product-grid')) {
 			image: 'hous.png',
 			description:
 				'Постройте уютный дом для Стефани! В набор входят детали для сборки двухэтажного дома с мебелью и 2 минифигурками. Для детей от 6 лет.',
+			age: '6+',
+			pieces: 233
 		},
 	]
 
@@ -254,10 +274,12 @@ if (document.getElementById('product-grid')) {
       `
 			productGrid.appendChild(productCard)
 
-			// Добавляем обработчик клика для разворачивания описания
-			const description = productCard.querySelector('.product-description')
-			description.addEventListener('click', () => {
-				description.classList.toggle('expanded')
+			// Добавляем обработчик клика на всю карточку товара
+			productCard.addEventListener('click', (event) => {
+				// Проверяем, что клик не был по кнопке "В корзину"
+				if (!event.target.classList.contains('add-to-cart-btn')) {
+					showProductModal(product)
+				}
 			})
 		})
 	}
@@ -584,4 +606,51 @@ document.addEventListener('DOMContentLoaded', function () {
 	initializeClock()
 	initializeThemeToggle()
 	// ... existing initialization code ...
+})
+
+function showProductModal(product) {
+	const modal = document.getElementById('product-modal')
+	const modalImage = modal.querySelector('.modal-image')
+	const modalTitle = modal.querySelector('.modal-title')
+	const modalSeries = modal.querySelector('.modal-series')
+	const modalPrice = modal.querySelector('.modal-price')
+	const modalDescription = modal.querySelector('.modal-description')
+	const modalAge = modal.querySelector('.modal-age span')
+	const modalPieces = modal.querySelector('.modal-pieces span')
+	const modalAddToCartBtn = modal.querySelector('.add-to-cart-btn')
+
+	modalImage.src = product.image
+	modalImage.alt = product.name
+	modalTitle.textContent = product.name
+	modalSeries.textContent = `Серия: ${product.series}`
+	modalPrice.textContent = `Цена: ${product.price} руб.`
+	modalDescription.textContent = product.description
+	modalAge.textContent = product.age
+	modalPieces.textContent = product.pieces
+	
+	modalAddToCartBtn.textContent = 'Добавить в корзину'
+	modalAddToCartBtn.onclick = () => {
+		addToCart(product.id, product.name, product.price)
+		modal.style.display = 'none'
+	}
+
+	modal.style.display = 'block'
+}
+
+// Закрытие модального окна
+document.addEventListener('DOMContentLoaded', () => {
+	const modal = document.getElementById('product-modal')
+	const closeBtn = document.querySelector('.close-modal')
+
+	if (closeBtn && modal) {
+		closeBtn.onclick = () => {
+			modal.style.display = 'none'
+		}
+
+		window.onclick = (event) => {
+			if (event.target === modal) {
+				modal.style.display = 'none'
+			}
+		}
+	}
 })
