@@ -654,3 +654,16 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	}
 })
+
+// Функционал кнопки "Наверх"
+document.addEventListener('DOMContentLoaded', () => {
+	const scrollToTopBtn = document.getElementById('scroll-to-top');
+	
+	// Плавная прокрутка наверх при клике
+	scrollToTopBtn.addEventListener('click', () => {
+		window.scrollTo({
+			top: 0,
+			behavior: 'smooth'
+		});
+	});
+});

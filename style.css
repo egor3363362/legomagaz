@@ -1504,3 +1504,64 @@ body.accessibility-mode .modal .add-to-cart-btn {
 	font-size: 1.5em !important;
 	padding: 15px 30px !important;
 }
+
+/* Стили для кнопки "Наверх" */
+.scroll-to-top-btn {
+	position: fixed;
+	bottom: 30px;
+	right: 30px;
+	width: 50px;
+	height: 50px;
+	background-color: #4CAF50;
+	color: white;
+	border: none;
+	border-radius: 50%;
+	font-size: 24px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.3s ease;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+	z-index: 999;
+}
+
+.scroll-to-top-btn:hover {
+	background-color: #45a049;
+	transform: translateY(-3px);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.scroll-to-top-btn:active {
+	transform: translateY(0);
+}
+
+/* Темная тема для кнопки "Наверх" */
+body.dark-theme .scroll-to-top-btn {
+	background-color: #5cb85c;
+}
+
+body.dark-theme .scroll-to-top-btn:hover {
+	background-color: #4cae4c;
+}
+
+/* Версия для слабовидящих */
+body.accessibility-mode .scroll-to-top-btn {
+	background-color: #000000 !important;
+	color: #ffff00 !important;
+	border: 2px solid #000000 !important;
+	width: 70px !important;
+	height: 70px !important;
+	font-size: 32px !important;
+}
+
+/* Адаптивность для кнопки "Наверх" */
+@media (max-width: 768px) {
+	.scroll-to-top-btn {
+		bottom: 20px;
+		right: 20px;
+		width: 40px;
+		height: 40px;
+		font-size: 20px;
+	}
+}
