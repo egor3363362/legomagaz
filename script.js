@@ -667,3 +667,85 @@ document.addEventListener('DOMContentLoaded', () => {
 		});
 	});
 });
+
+// Информация о магазинах
+const storeInfo = {
+	muti: {
+		title: 'LEGO Store Мытищи',
+		floor: '3 этаж',
+		phone: '+7 (495) 777-88-99',
+		email: 'mytischi@legostore.ru',
+		image: 'muti.png'
+	},
+	serg: {
+		title: 'LEGO Store Сергиев Посад',
+		floor: '2 этаж',
+		phone: '+7 (495) 555-66-77',
+		email: 'sergiev@legostore.ru',
+		image: 'serg.png'
+	}
+};
+
+// Функция для отображения модального окна
+function showStoreModal(storeId) {
+	const modal = document.getElementById('store-modal');
+	const store = storeInfo[storeId];
+	
+	if (!store) return;
+
+	// Заполняем информацию о магазине
+	modal.querySelector('.store-title').textContent = store.title;
+	modal.querySelector('.store-floor').textContent = `Этаж: ${store.floor}`;
+	modal.querySelector('.store-phone').textContent = store.phone;
+	modal.querySelector('.store-email').textContent = store.email;
+	modal.querySelector('.store-image').src = store.image;
+	modal.querySelector('.store-image').alt = store.title;
+
+	// Показываем модальное окно
+	modal.style.display = 'block';
+
+	// Закрытие по клику на крестик
+	const closeBtn = modal.querySelector('.close-modal');
+	closeBtn.onclick = function() {
+		modal.style.display = 'none';
+	};
+
+	// Закрытие по клику вне модального окна
+	window.onclick = function(event) {
+		if (event.target == modal) {
+			modal.style.display = 'none';
+		}
+	};
+}
+
+// Функция для создания визуальных маркеров
+function createStoreMarkers() {
+	const mapContainer = document.querySelector('.map-container');
+	const storeMap = document.querySelector('.store-map');
+	
+	// Создаем маркеры для каждого магазина
+	const stores = [
+		{ id: 'muti', x: 171, y: 107, name: 'Мытищи' },
+		{ id: 'serg', x: 187, y: 76, name: 'Сергиев Посад' }
+	];
+
+	stores.forEach(store => {
+		const marker = document.createElement('div');
+		marker.className = 'store-marker';
+		marker.style.left = `${store.x}px`;
+		marker.style.top = `${store.y}px`;
+		marker.setAttribute('data-store', store.id);
+		marker.title = store.name;
+		
+		marker.addEventListener('click', () => {
+			showStoreModal(store.id);
+		});
+		
+		mapContainer.appendChild(marker);
+	});
+}
+
+// Вызываем функцию после загрузки страницы
+document.addEventListener('DOMContentLoaded', () => {
+	createStoreMarkers();
+});
