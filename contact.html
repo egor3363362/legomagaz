@@ -102,12 +102,47 @@
 						<p><i class="fas fa-phone"></i> Телефон: +7 (495) 123-45-67</p>
 						<p><i class="fas fa-map-marker-alt"></i> Москва, ул. Кубиков, 10</p>
 					</div>
+					<div class="footer-section map">
+						<h4>Наши магазины</h4>
+						<div class="map-container">
+							<img src="moskva.png" alt="Карта магазинов" class="store-map">
+							<div class="store-location" data-store="muti" style="position: absolute; left: 478px; top: 297px;"></div>
+							<div class="store-location" data-store="serg" style="position: absolute; left: 590px; top: 180px;"></div>
+						</div>
+					</div>
 				</div>
 				<div class="footer-bottom">
 					&copy; 2024 LEGO Store | Все права защищены.
 				</div>
 			</footer>
 		</div>
+
+		<!-- Модальное окно для магазинов -->
+		<div id="store-modal" class="modal">
+			<div class="modal-content">
+				<span class="close-modal">&times;</span>
+				<div class="modal-grid">
+					<div class="modal-info">
+						<h2 class="store-title"></h2>
+						<div class="store-details">
+							<p class="store-floor"></p>
+							<p class="store-hours"><strong>Часы работы:</strong><br>
+								Пн-Пт: 10:00 - 22:00<br>
+								Сб-Вс: 10:00 - 20:00
+							</p>
+							<p class="store-contacts">
+								<strong>Телефон:</strong> <span class="store-phone"></span><br>
+								<strong>Email:</strong> <span class="store-email"></span>
+							</p>
+						</div>
+					</div>
+					<div class="modal-image-container">
+						<img class="store-image" src="" alt="">
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<script src="script.js"></script>
 	</body>
 </html>

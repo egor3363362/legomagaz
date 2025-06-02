@@ -26,11 +26,138 @@ function saveCartItems(cartItems) {
 	updateCartCounter()
 }
 
+// Глобальный массив продуктов
+const products = [
+	{
+		id: 1,
+		name: 'Полицейский участок',
+		series: 'City',
+		price: 5999,
+		image: 'polise.png',
+		description: 'Создайте свой полицейский участок с этим увлекательным набором! В набор входят полицейский участок, полицейская машина, вертолет и 5 минифигурок. Отлично подходит для детей от 6 лет.',
+		age: '6+',
+		pieces: 743,
+		quantity: 5
+	},
+	{
+		id: 2,
+		name: 'Пожарная станция',
+		series: 'City',
+		price: 4999,
+		image: 'fire.png',
+		description: 'Спасайте город от пожаров с этой пожарной станцией! В набор входят пожарная машина, вертолет, станция и 4 минифигурки пожарных. Рекомендуется для детей от 6 лет.',
+		age: '6+',
+		pieces: 509,
+		quantity: 3
+	},
+	{
+		id: 3,
+		name: 'Грузовой поезд',
+		series: 'City',
+		price: 12999,
+		image: 'Atrain.png',
+		description: 'Управляйте грузовым поездом с дистанционным управлением! В набор входят локомотив, вагоны, железнодорожная станция и 3 минифигурки. Для детей от 7 лет.',
+		age: '7+',
+		pieces: 1226,
+		quantity: 2
+	},
+	{
+		id: 4,
+		name: 'Экскаватор',
+		series: 'Technic',
+		price: 2499,
+		image: 'exkavator.png',
+		description: 'Соберите реалистичный экскаватор с подвижными элементами! В набор входят детали для сборки экскаватора с подвижной стрелой и ковшом. Для детей от 8 лет.',
+		age: '8+',
+		pieces: 569,
+		quantity: 8
+	},
+	{
+		id: 5,
+		name: 'Гоночный автомобиль',
+		series: 'Technic',
+		price: 3499,
+		image: 'guntruk.png',
+		description: 'Создайте крутой гоночный автомобиль с подвижными элементами! В набор входят детали для сборки спортивного автомобиля с подвеской и рулевым управлением. Для детей от 9 лет.',
+		age: '9+',
+		pieces: 647,
+		quantity: 4
+	},
+	{
+		id: 6,
+		name: 'Кран',
+		series: 'Technic',
+		price: 8999,
+		image: 'kran.png',
+		description: 'Соберите мощный строительный кран с множеством функций! В набор входят детали для сборки крана с подвижной стрелой, лебедкой и кабиной. Для детей от 10 лет.',
+		age: '10+',
+		pieces: 1492,
+		quantity: 1
+	},
+	{
+		id: 7,
+		name: 'Сокол Тысячелетия',
+		series: 'Star Wars',
+		price: 15999,
+		image: 'sokol.png',
+		description: 'Соберите легендарный корабль Хана Соло! В набор входят детали для сборки Сокола Тысячелетия с открывающимся люком, пушками и 7 минифигурками. Для детей от 9 лет.',
+		age: '9+',
+		pieces: 1468,
+		quantity: 6
+	},
+	{
+		id: 8,
+		name: 'Истребитель X-Wing',
+		series: 'Star Wars',
+		price: 7999,
+		image: 'x-wing.png',
+		description: 'Создайте истребитель X-Wing из Звездных войн! В набор входят детали для сборки истребителя с подвижными крыльями и 4 минифигурками. Для детей от 8 лет.',
+		age: '8+',
+		pieces: 474,
+		quantity: 0
+	},
+	{
+		id: 9,
+		name: 'Больница Хартлейк Сити',
+		series: 'Friends',
+		price: 4599,
+		image: 'hospital.png',
+		description: 'Создайте современную больницу с множеством деталей! В набор входят здание больницы, машина скорой помощи и 4 минифигурки. Для детей от 6 лет.',
+		age: '6+',
+		pieces: 379,
+		quantity: 7
+	},
+	{
+		id: 10,
+		name: 'Дом Стефани',
+		series: 'Friends',
+		price: 3299,
+		image: 'hous.png',
+		description: 'Постройте уютный дом для Стефани! В набор входят детали для сборки двухэтажного дома с мебелью и 2 минифигурками. Для детей от 6 лет.',
+		age: '6+',
+		pieces: 233,
+		quantity: 2
+	},
+]
+
+// Функция добавления в корзину
 function addToCart(productId, productName, productPrice) {
 	const cartItems = getCartItems()
 	const existingItem = cartItems.find(item => item.id === productId)
+	
+	// Найти продукт в нашем каталоге
+	const product = products.find(p => p.id === productId)
+	if (!product || product.quantity <= 0) {
+		alert('Извините, товар закончился на складе. Склады пополнятся через 2 дня.')
+		return
+	}
 
 	if (existingItem) {
+		// Проверяем, достаточно ли товара на складе
+		if (product.quantity < existingItem.quantity + 1) {
+			alert('Извините, недостаточно товара на складе.')
+			return
+		}
 		existingItem.quantity += 1
 	} else {
 		cartItems.push({
@@ -40,8 +167,35 @@ function addToCart(productId, productName, productPrice) {
 			quantity: 1,
 		})
 	}
+	
+	// Уменьшаем количество товара в каталоге
+	product.quantity -= 1
+	
+	// Сохраняем изменения
 	saveCartItems(cartItems)
-	alert(`${productName} добавлен в корзину!`) // Optional: user feedback
+	
+	// Обновляем отображение количества товара на странице
+	const productCards = document.querySelectorAll('.product-card')
+	productCards.forEach(card => {
+		const cardProductId = parseInt(card.querySelector('.add-to-cart-btn').dataset.productId)
+		if (cardProductId === productId) {
+			const stockStatus = card.querySelector('.in-stock')
+			if (stockStatus) {
+				stockStatus.textContent = `В наличии: ${product.quantity} шт.`
+			}
+			const addToCartBtn = card.querySelector('.add-to-cart-btn')
+			if (product.quantity <= 0) {
+				addToCartBtn.disabled = true
+				addToCartBtn.textContent = 'Нет в наличии'
+				if (stockStatus) {
+					stockStatus.className = 'out-of-stock'
+					stockStatus.textContent = 'Нет в наличии'
+				}
+			}
+		}
+	})
+	
+	alert(`${productName} добавлен в корзину!`)
 }
 
 function updateCartCounter() {
@@ -140,119 +294,6 @@ function displayCartItems() {
 
 // Catalog Data and Functions
 if (document.getElementById('product-grid')) {
-	const products = [
-		{
-			id: 1,
-			name: 'Полицейский участок',
-			series: 'City',
-			price: 5999,
-			image: 'polise.png',
-			description:
-				'Создайте свой полицейский участок с этим увлекательным набором! В набор входят полицейский участок, полицейская машина, вертолет и 5 минифигурок. Отлично подходит для детей от 6 лет.',
-			age: '6+',
-			pieces: 743
-		},
-		{
-			id: 2,
-			name: 'Пожарная станция',
-			series: 'City',
-			price: 4999,
-			image: 'fire.png',
-			description:
-				'Спасайте город от пожаров с этой пожарной станцией! В набор входят пожарная машина, вертолет, станция и 4 минифигурки пожарных. Рекомендуется для детей от 6 лет.',
-			age: '6+',
-			pieces: 509
-		},
-		{
-			id: 3,
-			name: 'Грузовой поезд',
-			series: 'City',
-			price: 12999,
-			image: 'Atrain.png',
-			description:
-				'Управляйте грузовым поездом с дистанционным управлением! В набор входят локомотив, вагоны, железнодорожная станция и 3 минифигурки. Для детей от 7 лет.',
-			age: '7+',
-			pieces: 1226
-		},
-		{
-			id: 4,
-			name: 'Экскаватор',
-			series: 'Technic',
-			price: 2499,
-			image: 'exkavator.png',
-			description:
-				'Соберите реалистичный экскаватор с подвижными элементами! В набор входят детали для сборки экскаватора с подвижной стрелой и ковшом. Для детей от 8 лет.',
-			age: '8+',
-			pieces: 569
-		},
-		{
-			id: 5,
-			name: 'Гоночный автомобиль',
-			series: 'Technic',
-			price: 3499,
-			image: 'guntruk.png',
-			description:
-				'Создайте крутой гоночный автомобиль с подвижными элементами! В набор входят детали для сборки спортивного автомобиля с подвеской и рулевым управлением. Для детей от 9 лет.',
-			age: '9+',
-			pieces: 647
-		},
-		{
-			id: 6,
-			name: 'Кран',
-			series: 'Technic',
-			price: 8999,
-			image: 'kran.png',
-			description:
-				'Соберите мощный строительный кран с множеством функций! В набор входят детали для сборки крана с подвижной стрелой, лебедкой и кабиной. Для детей от 10 лет.',
-			age: '10+',
-			pieces: 1492
-		},
-		{
-			id: 7,
-			name: 'Сокол Тысячелетия',
-			series: 'Star Wars',
-			price: 15999,
-			image: 'sokol.png',
-			description:
-				'Соберите легендарный корабль Хана Соло! В набор входят детали для сборки Сокола Тысячелетия с открывающимся люком, пушками и 7 минифигурками. Для детей от 9 лет.',
-			age: '9+',
-			pieces: 1468
-		},
-		{
-			id: 8,
-			name: 'Истребитель X-Wing',
-			series: 'Star Wars',
-			price: 7999,
-			image: 'x-wing.png',
-			description:
-				'Создайте истребитель X-Wing из Звездных войн! В набор входят детали для сборки истребителя с подвижными крыльями и 4 минифигурками. Для детей от 8 лет.',
-			age: '8+',
-			pieces: 474
-		},
-		{
-			id: 9,
-			name: 'Больница Хартлейк Сити',
-			series: 'Friends',
-			price: 4599,
-			image: 'hospital.png',
-			description:
-				'Создайте современную больницу с множеством деталей! В набор входят здание больницы, машина скорой помощи и 4 минифигурки. Для детей от 6 лет.',
-			age: '6+',
-			pieces: 379
-		},
-		{
-			id: 10,
-			name: 'Дом Стефани',
-			series: 'Friends',
-			price: 3299,
-			image: 'hous.png',
-			description:
-				'Постройте уютный дом для Стефани! В набор входят детали для сборки двухэтажного дома с мебелью и 2 минифигурками. Для детей от 6 лет.',
-			age: '6+',
-			pieces: 233
-		},
-	]
-
 	const productGrid = document.getElementById('product-grid')
 	const sortPriceSelect = document.getElementById('sort-price')
 	const filterSeriesSelect = document.getElementById('filter-series')
@@ -262,21 +303,28 @@ if (document.getElementById('product-grid')) {
 		productsToDisplay.forEach(product => {
 			const productCard = document.createElement('div')
 			productCard.className = 'product-card'
+			
+			const stockStatus = product.quantity <= 0 
+				? '<p class="out-of-stock">Нет в наличии</p>' 
+				: `<p class="in-stock">В наличии: ${product.quantity} шт.</p>`
+			
 			productCard.innerHTML = `
-        <img src="${product.image}" alt="${product.name}" onerror="this.src='images/placeholder.png'; this.alt='Изображение не найдено';">
-        <h3>${product.name}</h3>
-        <p class="series">Серия: ${product.series}</p>
-        <p class="price">Цена: ${product.price} руб.</p>
-        <div class="product-description">
-            <p>${product.description}</p>
-        </div>
-        <button class="add-to-cart-btn" data-product-id="${product.id}" data-product-name="${product.name}" data-product-price="${product.price}">В корзину</button>
-      `
+				<img src="${product.image}" alt="${product.name}" onerror="this.src='images/placeholder.png'; this.alt='Изображение не найдено';">
+				<h3>${product.name}</h3>
+				<p class="series">Серия: ${product.series}</p>
+				<p class="price">Цена: ${product.price} руб.</p>
+				${stockStatus}
+				<div class="product-description">
+					<p>${product.description}</p>
+				</div>
+				<button class="add-to-cart-btn" data-product-id="${product.id}" data-product-name="${product.name}" data-product-price="${product.price}" ${product.quantity <= 0 ? 'disabled' : ''}>
+					${product.quantity <= 0 ? 'Нет в наличии' : 'В корзину'}
+				</button>
+			`
 			productGrid.appendChild(productCard)
 
-			// Добавляем обработчик клика на всю карточку товара
+			// Add click handler for product card
 			productCard.addEventListener('click', (event) => {
-				// Проверяем, что клик не был по кнопке "В корзину"
 				if (!event.target.classList.contains('add-to-cart-btn')) {
 					showProductModal(product)
 				}
@@ -618,6 +666,7 @@ function showProductModal(product) {
 	const modalAge = modal.querySelector('.modal-age span')
 	const modalPieces = modal.querySelector('.modal-pieces span')
 	const modalAddToCartBtn = modal.querySelector('.add-to-cart-btn')
+	const modalStock = modal.querySelector('.modal-stock')
 
 	modalImage.src = product.image
 	modalImage.alt = product.name
@@ -628,7 +677,15 @@ function showProductModal(product) {
 	modalAge.textContent = product.age
 	modalPieces.textContent = product.pieces
 	
-	modalAddToCartBtn.textContent = 'Добавить в корзину'
+	if (modalStock) {
+		modalStock.textContent = product.quantity > 0 
+			? `В наличии: ${product.quantity} шт.` 
+			: 'Нет в наличии'
+		modalStock.className = `modal-stock ${product.quantity > 0 ? 'in-stock' : 'out-of-stock'}`
+	}
+	
+	modalAddToCartBtn.disabled = product.quantity <= 0
+	modalAddToCartBtn.textContent = product.quantity <= 0 ? 'Нет в наличии' : 'Добавить в корзину'
 	modalAddToCartBtn.onclick = () => {
 		addToCart(product.id, product.name, product.price)
 		modal.style.display = 'none'
