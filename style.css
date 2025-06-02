@@ -1761,7 +1761,7 @@ body.accessibility-mode .scroll-to-top-btn {
 	position: relative;
 	margin-top: 15px;
 	width: 100%;
-	height: 100%;
+	/* height: 100%; */
 }
 
 .store-map {
