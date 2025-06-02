@@ -110,7 +110,8 @@ const products = [
 		id: 7,
 		name: 'Сокол Тысячелетия',
 		series: 'Star Wars',
-		price: 15999,
+		price: 11199,
+		originalPrice: 15999,
 		image: 'sokol.png',
 		description: 'Соберите легендарный корабль Хана Соло! В набор входят детали для сборки Сокола Тысячелетия с открывающимся люком, пушками и 7 минифигурками. Для детей от 9 лет.',
 		age: '9+',
@@ -307,58 +308,99 @@ function clearCart() {
 }
 
 function displayCartItems() {
-	const cartItemsContainer = document.getElementById('cart-items-container')
-	const cartTotalPriceElement = document.getElementById('cart-total-price')
-	const emptyCartMessage = document.getElementById('empty-cart-message')
-	const cartSummary = document.getElementById('cart-summary')
-
-	if (!cartItemsContainer) return // Only run on cart.html
-
-	const cartItems = getCartItems()
-	cartItemsContainer.innerHTML = '' // Clear previous items
+	const cartItems = getCartItems();
+	const container = document.getElementById('cart-items-container');
+	const cartSummary = document.getElementById('cart-summary');
+	const emptyCartMessage = document.getElementById('empty-cart-message');
 
 	if (cartItems.length === 0) {
-		emptyCartMessage.style.display = 'block'
-		cartSummary.style.display = 'none'
-		cartItemsContainer.innerHTML = '<p>Ваша корзина пуста.</p>'
-	} else {
-		emptyCartMessage.style.display = 'none'
-		cartSummary.style.display = 'block'
-		const table = document.createElement('table')
-		table.className = 'cart-table'
-		table.innerHTML = `
-      <thead>
-        <tr>
-          <th>Товар</th>
-          <th>Цена</th>
-          <th>Количество</th>
-          <th>Сумма</th>
-          <th>Удалить</th>
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    `
-		const tbody = table.querySelector('tbody')
-		let totalPrice = 0
-
-		cartItems.forEach(item => {
-			const itemTotalPrice = item.price * item.quantity
-			totalPrice += itemTotalPrice
-			const row = tbody.insertRow()
-			row.innerHTML = `
-        <td>${item.name}</td>
-        <td>${item.price} руб.</td>
-        <td>${item.quantity} шт.</td>
-        <td>${itemTotalPrice} руб.</td>
-        <td><button class="remove-from-cart-btn" data-product-id="${item.id}">Удалить</button></td>
-      `
-		})
-
-		cartItemsContainer.appendChild(table)
-		cartTotalPriceElement.textContent = totalPrice
+		if (container) container.style.display = 'none';
+		if (cartSummary) cartSummary.style.display = 'none';
+		if (emptyCartMessage) emptyCartMessage.style.display = 'block';
+		return;
 	}
-	updateCartCounter() // Ensure counter is also updated
+
+	if (container) {
+		container.style.display = 'block';
+		container.innerHTML = `
+			<table class="cart-table">
+				<thead>
+					<tr>
+						<th>Товар</th>
+						<th>Цена</th>
+						<th>Количество</th>
+						<th>Сумма</th>
+						<th>Удалить</th>
+					</tr>
+				</thead>
+				<tbody>
+					${cartItems.map(item => {
+						const product = products.find(p => p.id === item.id);
+						const maxQuantity = product ? product.quantity + item.quantity : 10;
+						return `
+							<tr>
+								<td>${item.name}</td>
+								<td>${item.price} руб.</td>
+								<td>
+									<div class="quantity-controls">
+										<button class="quantity-btn minus" onclick="updateQuantity(${item.id}, ${item.quantity - 1})">-</button>
+										<input type="number" value="${item.quantity}" min="1" max="${maxQuantity}" 
+											onchange="updateQuantity(${item.id}, this.value)"
+											class="quantity-input">
+										<button class="quantity-btn plus" onclick="updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
+									</div>
+								</td>
+								<td>${item.price * item.quantity} руб.</td>
+								<td>
+									<button class="remove-from-cart-btn" onclick="removeFromCart(${item.id})">Удалить</button>
+								</td>
+							</tr>
+						`;
+					}).join('')}
+				</tbody>
+			</table>
+		`;
+	}
+
+	if (cartSummary) cartSummary.style.display = 'block';
+	if (emptyCartMessage) emptyCartMessage.style.display = 'none';
+
+	updateCartTotal();
+	updateCartCounter();
+}
+
+function updateQuantity(productId, newQuantity) {
+	const cartItems = getCartItems();
+	const item = cartItems.find(item => item.id === productId);
+	if (!item) return;
+
+	const product = products.find(p => p.id === productId);
+	if (!product) return;
+
+	// Проверяем доступное количество на складе
+	const maxAvailable = product.quantity + item.quantity;
+	newQuantity = Math.max(1, Math.min(maxAvailable, parseInt(newQuantity)));
+
+	// Вычисляем разницу для обновления количества на складе
+	const quantityDiff = item.quantity - newQuantity;
+	product.quantity += quantityDiff;
+
+	// Обновляем количество в корзине
+	item.quantity = newQuantity;
+
+	saveCartItems(cartItems);
+	saveProductsState();
+	displayCartItems();
+	updateCartTotal();
+}
+
+function updateCartTotal() {
+	const cartItems = getCartItems();
+	const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+	const totalElement = document.getElementById('cart-total-price');
+	if (totalElement) {
+		totalElement.textContent = total;
+	}
 }
 
 // Catalog Data and Functions
@@ -377,11 +419,15 @@ if (document.getElementById('product-grid')) {
 				? '<p class="out-of-stock">Нет в наличии</p>' 
 				: `<p class="in-stock">В наличии: ${product.quantity} шт.</p>`
 			
+			const priceDisplay = product.originalPrice 
+				? `<p class="price"><s>${product.originalPrice} руб.</s> <span class="discount-price">${product.price} руб.</span></p>`
+				: `<p class="price">Цена: ${product.price} руб.</p>`
+
 			productCard.innerHTML = `
 				<img src="${product.image}" alt="${product.name}" onerror="this.src='images/placeholder.png'; this.alt='Изображение не найдено';">
 				<h3>${product.name}</h3>
 				<p class="series">Серия: ${product.series}</p>
-				<p class="price">Цена: ${product.price} руб.</p>
+				${priceDisplay}
 				${stockStatus}
 				<div class="product-description">
 					<p>${product.description}</p>
@@ -732,7 +778,13 @@ function showProductModal(product) {
 	modalImage.alt = product.name
 	modalTitle.textContent = product.name
 	modalSeries.textContent = `Серия: ${product.series}`
-	modalPrice.textContent = `Цена: ${product.price} руб.`
+	
+	if (product.originalPrice) {
+		modalPrice.innerHTML = `<s>${product.originalPrice} руб.</s> <span class="discount-price">${product.price} руб.</span>`
+	} else {
+		modalPrice.textContent = `Цена: ${product.price} руб.`
+	}
+	
 	modalDescription.textContent = product.description
 	modalAge.textContent = product.age
 	modalPieces.textContent = product.pieces
@@ -1015,3 +1067,70 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	}
 })
+
+// Массив разделов для поиска
+const sitePages = [
+    { title: 'Главная', url: 'index.html', icon: '🏠' },
+    { title: 'О нас', url: 'about.html', icon: 'ℹ️' },
+    { title: 'Каталог', url: 'catalog.html', icon: '📦' },
+    { title: 'Отзывы', url: 'reviews.html', icon: '⭐' },
+    { title: 'Контакты', url: 'contact.html', icon: '📞' },
+    { title: 'Доставка и оплата', url: 'delivery.html', icon: '🚚' },
+    { title: 'Корзина', url: 'cart.html', icon: '🛒' }
+];
+
+// Инициализация поиска при загрузке страницы
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('site-search');
+    const searchResults = document.getElementById('search-results');
+
+    if (searchInput && searchResults) {
+        // Обработчик ввода в поисковую строку
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            if (searchTerm.length === 0) {
+                searchResults.classList.remove('active');
+                searchResults.innerHTML = '';
+                return;
+            }
+
+            // Фильтрация разделов
+            const filteredPages = sitePages.filter(page => 
+                page.title.toLowerCase().includes(searchTerm)
+            );
+
+            // Отображение результатов
+            if (filteredPages.length > 0) {
+                searchResults.innerHTML = filteredPages.map(page => `
+                    <div class="search-result-item" onclick="window.location.href='${page.url}'">
+                        <span>${page.icon}</span>
+                        <span>${page.title}</span>
+                    </div>
+                `).join('');
+                searchResults.classList.add('active');
+            } else {
+                searchResults.innerHTML = '<div class="search-result-item">Ничего не найдено</div>';
+                searchResults.classList.add('active');
+            }
+        });
+
+        // Закрытие результатов поиска при клике вне
+        document.addEventListener('click', (e) => {
+            if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                searchResults.classList.remove('active');
+            }
+        });
+
+        // Обработка нажатия Enter
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const firstResult = searchResults.querySelector('.search-result-item');
+                if (firstResult) {
+                    const url = firstResult.getAttribute('onclick').match(/'(.+)'/)[1];
+                    window.location.href = url;
+                }
+            }
+        });
+    }
+});
