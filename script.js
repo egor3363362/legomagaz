@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// Cart System
 	updateCartCounter() // Update counter on every page load
+
+	// Load products state
+	loadProductsState()
 })
 
 function getCartItems() {
@@ -114,7 +117,7 @@ const products = [
 		description: 'Создайте истребитель X-Wing из Звездных войн! В набор входят детали для сборки истребителя с подвижными крыльями и 4 минифигурками. Для детей от 8 лет.',
 		age: '8+',
 		pieces: 474,
-		quantity: 0
+		quantity: 12
 	},
 	{
 		id: 9,
@@ -140,62 +143,116 @@ const products = [
 	},
 ]
 
+// Функция для сохранения состояния продуктов
+function saveProductsState() {
+	localStorage.setItem('productsState', JSON.stringify(products))
+}
+
+// Функция для загрузки состояния продуктов
+function loadProductsState() {
+	const savedState = localStorage.getItem('productsState')
+	if (savedState) {
+		const savedProducts = JSON.parse(savedState)
+		// Обновляем количество в массиве products
+		products.forEach((product, index) => {
+			if (savedProducts[index]) {
+				product.quantity = savedProducts[index].quantity
+			}
+		})
+	}
+}
+
 // Функция добавления в корзину
 function addToCart(productId, productName, productPrice) {
 	const cartItems = getCartItems()
-	const existingItem = cartItems.find(item => item.id === productId)
 	
-	// Найти продукт в нашем каталоге
+	// Найти продукт в каталоге
 	const product = products.find(p => p.id === productId)
-	if (!product || product.quantity <= 0) {
+	if (!product) {
+		alert('Товар не найден.')
+		return
+	}
+
+	// Проверяем наличие товара на складе
+	if (product.quantity === 0) {
 		alert('Извините, товар закончился на складе. Склады пополнятся через 2 дня.')
 		return
 	}
 
+	// Добавляем товар в корзину
+	const existingItem = cartItems.find(item => item.id === productId)
 	if (existingItem) {
-		// Проверяем, достаточно ли товара на складе
-		if (product.quantity < existingItem.quantity + 1) {
-			alert('Извините, недостаточно товара на складе.')
-			return
-		}
 		existingItem.quantity += 1
 	} else {
 		cartItems.push({
 			id: productId,
 			name: productName,
 			price: productPrice,
-			quantity: 1,
+			quantity: 1
 		})
 	}
-	
-	// Уменьшаем количество товара в каталоге
+
+	// Уменьшаем количество на складе
 	product.quantity -= 1
 	
 	// Сохраняем изменения
 	saveCartItems(cartItems)
+	saveProductsState() // Сохраняем состояние продуктов
 	
-	// Обновляем отображение количества товара на странице
+	// Обновляем отображение в каталоге
+	updateProductDisplay(product)
+	
+	alert(`${productName} добавлен в корзину!`)
+}
+
+// Новая функция для обновления отображения товара
+function updateProductDisplay(product) {
 	const productCards = document.querySelectorAll('.product-card')
 	productCards.forEach(card => {
 		const cardProductId = parseInt(card.querySelector('.add-to-cart-btn').dataset.productId)
-		if (cardProductId === productId) {
-			const stockStatus = card.querySelector('.in-stock')
+		if (cardProductId === product.id) {
+			// Обновляем статус наличия
+			const stockStatus = card.querySelector('.in-stock, .out-of-stock')
 			if (stockStatus) {
-				stockStatus.textContent = `В наличии: ${product.quantity} шт.`
-			}
-			const addToCartBtn = card.querySelector('.add-to-cart-btn')
-			if (product.quantity <= 0) {
-				addToCartBtn.disabled = true
-				addToCartBtn.textContent = 'Нет в наличии'
-				if (stockStatus) {
+				if (product.quantity > 0) {
+					stockStatus.className = 'in-stock'
+					stockStatus.textContent = `В наличии: ${product.quantity} шт.`
+				} else {
 					stockStatus.className = 'out-of-stock'
 					stockStatus.textContent = 'Нет в наличии'
 				}
 			}
+
+			// Обновляем кнопку
+			const addToCartBtn = card.querySelector('.add-to-cart-btn')
+			if (product.quantity === 0) {
+				addToCartBtn.disabled = true
+				addToCartBtn.textContent = 'Нет в наличии'
+			}
 		}
 	})
-	
-	alert(`${productName} добавлен в корзину!`)
+
+	// Обновляем модальное окно, если оно открыто
+	const modal = document.getElementById('product-modal')
+	if (modal && modal.style.display === 'block') {
+		const modalStock = modal.querySelector('.modal-stock')
+		const modalAddToCartBtn = modal.querySelector('.add-to-cart-btn')
+		
+		if (modalStock) {
+			if (product.quantity > 0) {
+				modalStock.className = 'modal-stock in-stock'
+				modalStock.textContent = `В наличии: ${product.quantity} шт.`
+			} else {
+				modalStock.className = 'modal-stock out-of-stock'
+				modalStock.textContent = 'Нет в наличии'
+			}
+		}
+		
+		if (modalAddToCartBtn) {
+			modalAddToCartBtn.disabled = product.quantity === 0
+			modalAddToCartBtn.textContent = product.quantity === 0 ? 'Нет в наличии' : 'Добавить в корзину'
+		}
+	}
 }
 
 function updateCartCounter() {
@@ -209,29 +266,34 @@ function updateCartCounter() {
 
 function removeFromCart(productId) {
 	let cartItems = getCartItems()
-	cartItems = cartItems.filter(item => item.id !== productId)
-	saveCartItems(cartItems)
-	displayCartItems() // Re-render cart page
-}
-
-function updateQuantity(productId, newQuantity) {
-	let cartItems = getCartItems()
-	const item = cartItems.find(i => i.id === productId)
+	const item = cartItems.find(item => item.id === productId)
 	if (item) {
-		item.quantity = newQuantity
-		if (item.quantity <= 0) {
-			cartItems = cartItems.filter(i => i.id !== productId) // Remove if quantity is 0 or less
+		// Возвращаем товар на склад
+		const product = products.find(p => p.id === productId)
+		if (product) {
+			product.quantity += item.quantity
+			saveProductsState() // Сохраняем обновленное состояние продуктов
 		}
 	}
+	cartItems = cartItems.filter(item => item.id !== productId)
 	saveCartItems(cartItems)
-	displayCartItems() // Re-render cart page
+	displayCartItems() // Обновляем страницу корзины
 }
 
 function clearCart() {
 	if (confirm('Вы уверены, что хотите очистить корзину?')) {
+		const cartItems = getCartItems()
+		// Возвращаем все товары на склад
+		cartItems.forEach(item => {
+			const product = products.find(p => p.id === item.id)
+			if (product) {
+				product.quantity += item.quantity
+			}
+		})
+		saveProductsState() // Сохраняем обновленное состояние продуктов
 		localStorage.removeItem('cart')
 		updateCartCounter()
-		displayCartItems() // Re-render cart page
+		displayCartItems()
 	}
 }
 
@@ -278,9 +340,7 @@ function displayCartItems() {
 			row.innerHTML = `
         <td>${item.name}</td>
         <td>${item.price} руб.</td>
-        <td>
-          <input type="number" class="quantity-input" value="${item.quantity}" min="1" data-product-id="${item.id}">
-        </td>
+        <td>${item.quantity} шт.</td>
         <td>${itemTotalPrice} руб.</td>
         <td><button class="remove-from-cart-btn" data-product-id="${item.id}">Удалить</button></td>
       `
@@ -393,20 +453,6 @@ document.addEventListener('DOMContentLoaded', () => {
 			if (event.target.classList.contains('remove-from-cart-btn')) {
 				const productId = parseInt(event.target.dataset.productId)
 				removeFromCart(productId)
-			}
-		})
-
-		cartItemsContainer.addEventListener('change', event => {
-			if (event.target.classList.contains('quantity-input')) {
-				const productId = parseInt(event.target.dataset.productId)
-				const newQuantity = parseInt(event.target.value)
-				if (newQuantity > 0) {
-					updateQuantity(productId, newQuantity)
-				} else {
-					// Restore old value or remove item if desired
-					event.target.value =
-						getCartItems().find(i => i.id === productId)?.quantity || 1
-				}
 			}
 		})
 
