@@ -1940,3 +1940,100 @@ body.accessibility-mode .store-contacts {
 	cursor: not-allowed;
 	opacity: 0.65;
 }
+
+.order-items-list {
+	list-style: none;
+	padding: 0;
+	margin: 0 0 20px 0;
+}
+
+.order-items-list li {
+	padding: 10px;
+	border-bottom: 1px solid #ddd;
+	font-size: 16px;
+}
+
+.order-items-list li:last-child {
+	border-bottom: none;
+}
+
+body.dark-theme .order-items-list li {
+	border-bottom-color: #444;
+}
+
+body.dark-theme .checkout-form .order-summary {
+	background-color: #2d2d2d;
+}
+
+body.dark-theme .checkout-form input,
+body.dark-theme .checkout-form select,
+body.dark-theme .checkout-form textarea {
+	background-color: #3d3d3d;
+	color: #fff;
+	border-color: #555;
+}
+
+.checkout-form .btn-submit {
+	background-color: #4CAF50;
+	color: white;
+	padding: 15px 30px;
+	border: none;
+	border-radius: 4px;
+	font-size: 16px;
+	cursor: pointer;
+	width: 100%;
+	margin-top: 20px;
+	text-transform: uppercase;
+	font-weight: bold;
+	transition: background-color 0.3s ease;
+}
+
+.checkout-form .btn-submit:hover {
+	background-color: #45a049;
+}
+
+.checkout-form .btn-submit:disabled {
+	background-color: #cccccc;
+	cursor: not-allowed;
+}
+
+body.dark-theme .checkout-form .btn-submit {
+	background-color: #5cb85c;
+}
+
+body.dark-theme .checkout-form .btn-submit:hover {
+	background-color: #4cae4c;
+}
+
+.modal .checkout-submit-btn {
+	background-color: #4CAF50;
+	color: white;
+	padding: 15px 30px;
+	border: none;
+	border-radius: 4px;
+	font-size: 16px;
+	cursor: pointer;
+	width: 100%;
+	margin-top: 20px;
+	text-transform: uppercase;
+	font-weight: bold;
+	transition: background-color 0.3s ease;
+}
+
+.modal .checkout-submit-btn:hover {
+	background-color: #45a049;
+}
+
+.modal .checkout-submit-btn:disabled {
+	background-color: #cccccc;
+	cursor: not-allowed;
+}
+
+/* Темная тема */
+body.dark-theme .modal .checkout-submit-btn {
+	background-color: #5cb85c;
+}
+
+body.dark-theme .modal .checkout-submit-btn:hover {
+	background-color: #4cae4c;
+}

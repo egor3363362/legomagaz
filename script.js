@@ -18,6 +18,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// Load products state
 	loadProductsState()
+
+	// Добавляем валидацию для поля телефона
+	const phoneInput = document.getElementById('customer-phone')
+	if (phoneInput) {
+		phoneInput.addEventListener('input', function(e) {
+			// Удаляем все нецифровые символы
+			this.value = this.value.replace(/[^\d]/g, '')
+		})
+	}
 })
 
 function getCartItems() {
@@ -464,7 +473,12 @@ document.addEventListener('DOMContentLoaded', () => {
 		const checkoutButton = document.getElementById('checkout-btn')
 		if (checkoutButton) {
 			checkoutButton.addEventListener('click', () => {
-				alert('Функционал оформления заказа пока не реализован.')
+				const cartItems = getCartItems()
+				if (cartItems.length === 0) {
+					alert('Ваша корзина пуста')
+					return
+				}
+				openCheckoutModal()
 			})
 		}
 	}
@@ -852,3 +866,152 @@ function createStoreMarkers() {
 document.addEventListener('DOMContentLoaded', () => {
 	createStoreMarkers();
 });
+
+// Функция для открытия модального окна оформления заказа
+function openCheckoutModal() {
+	const modal = document.getElementById('checkout-modal')
+	if (!modal) return
+
+	// Отображаем товары в заказе
+	displayOrderItems()
+	
+	// Обновляем итоговую стоимость
+	updateOrderTotal()
+	
+	modal.style.display = 'block'
+
+	// Добавляем обработчик формы
+	const form = document.getElementById('checkout-form')
+	if (form) {
+		form.onsubmit = handleCheckoutSubmit
+	}
+
+	// Обработчик изменения способа доставки
+	const deliverySelect = document.getElementById('delivery-method')
+	if (deliverySelect) {
+		deliverySelect.onchange = updateOrderTotal
+	}
+}
+
+// Функция отображения товаров в форме заказа
+function displayOrderItems() {
+	const orderItems = document.getElementById('order-items')
+	if (!orderItems) return
+
+	const cartItems = getCartItems()
+	let html = '<ul class="order-items-list">'
+	cartItems.forEach(item => {
+		html += `
+			<li>
+				${item.name} x ${item.quantity} шт. = ${item.price * item.quantity} руб.
+			</li>
+		`
+	})
+	html += '</ul>'
+	orderItems.innerHTML = html
+}
+
+// Функция обновления итоговой стоимости
+function updateOrderTotal() {
+	const cartItems = getCartItems()
+	const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+	const deliveryMethod = document.getElementById('delivery-method').value
+	
+	let deliveryCost = 0
+	switch (deliveryMethod) {
+		case 'courier':
+			deliveryCost = 300
+			break
+		case 'post':
+			deliveryCost = 400
+			break
+		case 'pickup':
+			deliveryCost = 200
+			break
+	}
+	
+	const total = subtotal + deliveryCost
+	
+	document.getElementById('order-subtotal').textContent = subtotal
+	document.getElementById('delivery-cost').textContent = deliveryCost
+	document.getElementById('order-total').textContent = total
+}
+
+// Обработчик отправки формы заказа
+function handleCheckoutSubmit(event) {
+	event.preventDefault()
+	
+	const form = event.target
+	const formData = {
+		name: form.querySelector('#customer-name').value,
+		phone: form.querySelector('#customer-phone').value,
+		email: form.querySelector('#customer-email').value,
+		deliveryMethod: form.querySelector('#delivery-method').value,
+		address: form.querySelector('#delivery-address').value,
+		paymentMethod: form.querySelector('#payment-method').value,
+		comment: form.querySelector('#comment').value,
+		items: getCartItems(),
+		total: parseInt(document.getElementById('order-total').textContent)
+	}
+	
+	// Проверяем заполнение обязательных полей
+	if (!formData.name || !formData.phone || !formData.email || !formData.deliveryMethod || 
+		!formData.address || !formData.paymentMethod) {
+		alert('Пожалуйста, заполните все обязательные поля')
+		return
+	}
+	
+	// Показываем сообщение об успешном оформлении
+	alert(`Заказ успешно оформлен! Мы свяжемся с вами в ближайшее время для подтверждения заказа.`)
+	
+	// Очищаем корзину
+	clearCart()
+	
+	// Закрываем модальное окно
+	document.getElementById('checkout-modal').style.display = 'none'
+	
+	// Перенаправляем на главную страницу
+	window.location.href = 'index.html'
+}
+
+// Добавляем обработчик для кнопки оформления заказа
+document.addEventListener('DOMContentLoaded', () => {
+	const checkoutBtn = document.getElementById('checkout-btn')
+	if (checkoutBtn) {
+		checkoutBtn.onclick = () => {
+			const cartItems = getCartItems()
+			if (cartItems.length === 0) {
+				alert('Ваша корзина пуста')
+				return
+			}
+			openCheckoutModal()
+		}
+	}
+
+	// Добавляем валидацию для поля телефона
+	const phoneInput = document.getElementById('customer-phone')
+	if (phoneInput) {
+		phoneInput.addEventListener('input', function(e) {
+			// Удаляем все нецифровые символы
+			this.value = this.value.replace(/[^\d]/g, '')
+		})
+	}
+
+	// Обработчик закрытия модального окна
+	const modal = document.getElementById('checkout-modal')
+	if (modal) {
+		const closeBtn = modal.querySelector('.close-modal')
+		if (closeBtn) {
+			closeBtn.onclick = () => {
+				modal.style.display = 'none'
+			}
+		}
+
+		// Закрытие по клику вне модального окна
+		window.onclick = (event) => {
+			if (event.target === modal) {
+				modal.style.display = 'none'
+			}
+		}
+	}
+})
