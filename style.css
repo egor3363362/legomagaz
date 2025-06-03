@@ -1633,9 +1633,8 @@ body.accessibility-mode .cart-status a {
 }
 
 body.accessibility-mode .cart-status #cart-count {
-	background-color: #000000 !important;
-	color: #ffff00 !important;
-	border: 2px solid #000000 !important;
+	font-size: 1.2em;
+	padding: 2px 5px;
 }
 
 /* Адаптивность для модального окна */
@@ -2229,4 +2228,95 @@ body.accessibility-mode .quantity-input {
 	width: 70px;
 	font-size: 18px;
 	padding: 8px;
+}
+
+/* News Page Styles */
+.news-list {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.news-item {
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	padding: 20px;
+	display: flex;
+	gap: 20px;
+	align-items: flex-start;
+}
+
+.news-image {
+	width: 200px; /* Adjust as needed */
+	height: auto;
+	border-radius: 4px;
+	object-fit: cover;
+}
+
+.news-text-content {
+	flex: 1;
+}
+
+.news-text-content h3 {
+	margin-top: 0;
+	color: #333;
+}
+
+.news-text-content p {
+	color: #555;
+	line-height: 1.6;
+}
+
+.news-date {
+	font-size: 0.9em;
+	color: #777;
+	margin-top: 10px;
+}
+
+body.dark-theme .news-item {
+	background-color: #3a3a3a;
+	border-color: #555;
+}
+
+body.dark-theme .news-text-content h3 {
+	color: #f0f0f0;
+}
+
+body.dark-theme .news-text-content p {
+	color: #ccc;
+}
+
+body.dark-theme .news-date {
+	color: #aaa;
+}
+
+body.accessibility-mode .news-item {
+	border-width: 2px;
+}
+
+body.accessibility-mode .news-text-content h3 {
+	font-size: 1.8em;
+}
+
+body.accessibility-mode .news-text-content p {
+	font-size: 1.3em;
+}
+
+body.accessibility-mode .news-date {
+	font-size: 1.1em;
+}
+
+@media (max-width: 768px) {
+	.news-item {
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+	}
+
+	.news-image {
+		width: 80%; /* Adjust for smaller screens */
+		max-width: 300px;
+		margin-bottom: 15px;
+	}
 }

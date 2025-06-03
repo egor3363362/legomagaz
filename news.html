@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Новости — LEGO Магазин</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>LEGO Магазин</h1>
+            <button id="accessibility-toggle-btn" class="accessibility-button">
+                Версия для слабовидящих
+            </button>
+            <div class="search-container">
+                <input type="text" id="site-search" placeholder="Поиск по разделам..." class="search-input">
+                <div id="search-results" class="search-results"></div>
+            </div>
+        </header>
+        <div class="sidebar">
+            <div class="logo">🧱 LEGO Store</div>
+            <nav class="nav">
+                <a href="index.html">Главная</a>
+                <a href="about.html">О нас</a>
+                <a href="catalog.html">Каталог</a>
+                <a href="news.html">Новости</a>
+                <a href="reviews.html">Отзывы</a>
+                <a href="contact.html">Контакты</a>
+                <a href="delivery.html">Доставка и оплата</a>
+            </nav>
+            <div class="counter">Посещений: <span id="visit-count">0</span></div>
+            <div class="cart-status">
+                <a href="cart.html"> Корзина (<span id="cart-count">0</span>) </a>
+            </div>
+        </div>
+        <div class="main">
+            <div class="main-content">
+                <h2>Новости</h2>
+                <div class="news-list">
+                    <div class="news-item">
+                        <img src="images/sokol.png" alt="Новости о Star Wars" class="news-image">
+                        <div class="news-text-content">
+                            <h3>Скидки до 30% на все наборы Star Wars!</h3>
+                            <p>Не пропустите! Только до 20 июня скидки до 30% на все наборы из легендарной серии Star Wars. Пополните свою коллекцию или начните новое увлекательное приключение в далекой-далекой галактике!</p>
+                            <p class="news-date">15 мая 2024</p>
+                        </div>
+                    </div>
+                    <div class="news-item">
+                        <img src="kran.png" alt="Новости о LEGO Technic" class="news-image">
+                        <div class="news-text-content">
+                            <h3>Расширение ассортимента LEGO Technic!</h3>
+                            <p>Отличные новости для поклонников сложных механизмов! Мы значительно расширили наш ассортимент наборов LEGO Technic. Теперь у нас еще больше моделей автомобилей, строительной техники и других увлекательных конструкторов для настоящих инженеров.</p>
+                            <p class="news-date">10 мая 2024</p>
+                        </div>
+                    </div>
+                </div>
+                <button id="scroll-to-top" class="scroll-to-top-btn" title="Наверх">
+                    ↑
+                </button>
+            </div>
+        </div>
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section about">
+                    <h4>О магазине</h4>
+                    <p>
+                        Ваш любимый магазин оригинальных наборов LEGO. Радость для детей и
+                        взрослых!
+                    </p>
+                </div>
+                <div class="footer-section links">
+                    <h4>Полезные ссылки</h4>
+                    <ul>
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="about.html">О нас</a></li>
+                        <li><a href="catalog.html">Каталог</a></li>
+                        <li><a href="news.html">Новости</a></li>
+                        <li><a href="reviews.html">Отзывы</a></li>
+                        <li><a href="contact.html">Контакты</a></li>
+                        <li><a href="delivery.html">Доставка и оплата</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section contact-info">
+                    <h4>Свяжитесь с нами</h4>
+                    <p><i class="fas fa-envelope"></i> Email: info@legostore.ru</p>
+                    <p><i class="fas fa-phone"></i> Телефон: +7 (495) 123-45-67</p>
+                    <p><i class="fas fa-map-marker-alt"></i> г. Сергиев Посад, ул. Южная, д. 10, офис 5</p>
+                </div>
+                <div class="footer-section map">
+                    <h4>Наши магазины</h4>
+                    <div class="map-container">
+                        <img src="moskva.png" alt="Карта магазинов" class="store-map">
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; 2024 LEGO Store | Все права защищены.
+            </div>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
